@@ -36,7 +36,7 @@ int mdc(long a, long b)
 	return mdc(b, a % b);
 }
 
-int mod_inverse(long a, long m)
+int coprime_mod_inverse(long a, long m)
 {
 	stack_t *remainder_stack = create_stack();
 	fill_remainder_stack(remainder_stack, a, m);
@@ -44,9 +44,9 @@ int mod_inverse(long a, long m)
 	if (is_empty(remainder_stack)) return -1;
 
 	remainder_t *current_remainder = pop(remainder_stack);
-	int secondToLast = 1;
+	int secondLast = 1;
 	int last = current_remainder->quotient;
-	int t = secondToLast;
+	int s = secondLast;
 	int pop_count = 0;
 
 	free(current_remainder);
@@ -55,15 +55,16 @@ int mod_inverse(long a, long m)
 		current_remainder = pop(remainder_stack);
 		pop_count++;
 		
-		if (pop_count > 2) secondToLast = last;
-		if (pop_count > 1) last = t;
+		if (pop_count > 2) secondLast = last;
+		if (pop_count > 1) last = s;
 
-		t = secondToLast + (last * current_remainder->quotient);
+		s = secondLast + (last * current_remainder->quotient);
 		free(current_remainder);
 	}
+	int t = last * -1;
 
 	free(remainder_stack);
-	return a < m ? t : last * -1;
+	return a < m ? s : t;
 }
 
 void fill_remainder_stack(stack_t *stack, long a, long b)

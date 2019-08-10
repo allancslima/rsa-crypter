@@ -39,6 +39,11 @@ long mdc(long a, long b, void (*listener)(long quotient, long remainder))
 	return mdc(b, mod, listener);
 }
 
+int are_coprime(long a, long b)
+{
+	return mdc(a, b, NULL) == 1;
+}
+
 long coprime_mod_inverse(long a, long m)
 {
 	stack_t *quotients_stack = create_quotients_stack(max(a, m), min(a, m));

@@ -4,18 +4,7 @@
 #include "stack.h"
 #include "math.h"
 
-typedef struct _remainder remainder_t;
-
-remainder_t *create_remainder(long a, long b);
-
-void fill_remainder_stack(stack_t *stack, long a, long b);
-
-struct _remainder {
-	int value;
-	int dividend;
-	int divisor;
-	int quotient;
-};
+stack_t* create_quotients_stack(long a, long b);
 
 int is_prime(long n)
 {
@@ -28,64 +17,67 @@ int is_prime(long n)
 	return 1;
 }
 
-int mdc(long a, long b)
+long min(long a, long b)
+{
+	return a < b ? a : b;
+}
+
+long max(long a, long b)
+{
+	return a > b ? a : b;
+}
+
+long mdc(long a, long b, void (*listener)(long quotient, long remainder))
 {
 	if (b == 0) {
 		return a;
 	}
-	return mdc(b, a % b);
-}
-
-int coprime_mod_inverse(long a, long m)
-{
-	stack_t *remainder_stack = create_stack();
-	fill_remainder_stack(remainder_stack, a, m);
-	
-	if (is_empty(remainder_stack)) return -1;
-
-	remainder_t *current_remainder = pop(remainder_stack);
-	int secondLast = 1;
-	int last = current_remainder->quotient;
-	int s = secondLast;
-	int pop_count = 0;
-
-	free(current_remainder);
-	
-	while (!is_empty(remainder_stack)) {
-		current_remainder = pop(remainder_stack);
-		pop_count++;
-		
-		if (pop_count > 2) secondLast = last;
-		if (pop_count > 1) last = s;
-
-		s = secondLast + (last * current_remainder->quotient);
-		free(current_remainder);
+	long mod = a % b;
+	if (listener != NULL) {
+		listener(a / b, mod);
 	}
-	int t = last * -1;
-
-	free(remainder_stack);
-	return a < m ? s : t;
+	return mdc(b, mod, listener);
 }
 
-void fill_remainder_stack(stack_t *stack, long a, long b)
+long coprime_mod_inverse(long a, long m)
 {
-	if (b > 1) {
-		if (a > b) {
-			remainder_t *new_remainder = create_remainder(a, b);
-			push(stack, new_remainder);
-			fill_remainder_stack(stack, b, new_remainder->value);
-		} else {
-			fill_remainder_stack(stack, b, a);
-		}
+	stack_t *quotients_stack = create_quotients_stack(max(a, m), min(a, m));
+	pop(quotients_stack);
+
+	long secondLast = 1;
+	long last = *((long*) pop(quotients_stack));
+	long inverse = last;
+	int quotients_count = 1;
+	
+	while (!is_empty(quotients_stack)) {
+		long current = *((long*) pop(quotients_stack));
+		inverse = (current * last) + secondLast;
+		secondLast = last;
+		last = inverse;
+		quotients_count++;
 	}
+
+	if (quotients_count % 2 == 0) secondLast *= -1;
+	else inverse *= -1;
+
+	if (a > m) inverse = secondLast;
+
+	while (inverse < 0) inverse += m;
+	while (inverse > m) inverse -= m;
+
+	return inverse;
 }
 
-remainder_t *create_remainder(long a, long b)
+stack_t* create_quotients_stack(long a, long b)
 {
-	remainder_t *new_remainder = (remainder_t*) malloc(sizeof(remainder_t));
-	new_remainder->dividend = a;
-	new_remainder->divisor = b;
-	new_remainder->quotient = a / b;
-	new_remainder->value = a - (new_remainder->quotient * b);
-	return new_remainder;
+	stack_t *stack = create_stack();
+	
+	void quotients_listener(long quotient, long remainder) {
+		long *q = (long*) malloc(sizeof(long));
+		*q = quotient;
+		push(stack, q);
+	}
+	
+	mdc(a, b, quotients_listener);
+	return stack;
 }

@@ -3,8 +3,12 @@
 
 int is_prime(long n);
 
-int mdc(long a, long b);
+long min(long a, long b);
 
-int coprime_mod_inverse(long a, long m);
+long max(long a, long b);
+
+long mdc(long a, long b, void (*function)(long quotient, long remainder));
+
+long coprime_mod_inverse(long a, long m);
 
 #endif

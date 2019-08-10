@@ -2,42 +2,43 @@
 #include <stdlib.h>
 #include "stack.h"
 
-struct node {
+typedef struct _node node_t;
+
+struct _node {
 	void *data;
-	node *next;
+	node_t *next;
 };
 
-struct stack {
-	node *top;
+struct _stack {
+	node_t *top;
 };
 
-stack* create_stack()
+stack_t* create_stack()
 {
-	stack *new_stack = (stack*) malloc(sizeof(stack));
+	stack_t *new_stack = (stack_t*) malloc(sizeof(stack_t));
 	new_stack->top = NULL;
 	return new_stack;
 }
 
-void push(stack *stack, void *data)
+void push(stack_t *stack, void *data)
 {
-	node *new_node = (node*) malloc(sizeof(node));
+	node_t *new_node = (node_t*) malloc(sizeof(node_t));
 	new_node->data = data;
 	new_node->next = stack->top;
 	stack->top = new_node;
 }
 
-int is_empty(stack *stack)
+int is_empty(stack_t *stack)
 {
 	return stack->top == NULL;
 }
 
-void* pop(stack *stack)
+void* pop(stack_t *stack)
 {
 	if (is_empty(stack)) {
-		printf("Stack underflow\n");
 		return NULL;
 	}
-	node *top = stack->top;
+	node_t *top = stack->top;
 	stack->top = top->next;
 
 	void *data = top->data;
@@ -45,10 +46,9 @@ void* pop(stack *stack)
 	return data;
 }
 
-void* peek(stack *stack)
+void* peek(stack_t *stack)
 {
 	if (is_empty(stack)) {
-		printf("Stack overflow\n");
 		return NULL;
 	}
 	return stack->top->data;

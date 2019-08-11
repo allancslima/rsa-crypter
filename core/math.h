@@ -1,16 +1,18 @@
 #ifndef HEADER_FILE
 #define HEADER_FILE
 
-int is_prime(long n);
+typedef long long big_int;
 
-long min(long a, long b);
+int is_prime(big_int n);
 
-long max(long a, long b);
+big_int min(big_int a, big_int b);
 
-long mdc(long a, long b, void (*listener)(long quotient, long remainder));
+big_int max(big_int a, big_int b);
 
-int are_coprime(long a, long b);
+big_int mdc(big_int a, big_int b, void (*listener)(big_int quotient, big_int remainder));
 
-long coprime_mod_inverse(long a, long m);
+int are_coprime(big_int a, big_int b);
+
+big_int coprime_mod_inverse(big_int a, big_int m);
 
 #endif

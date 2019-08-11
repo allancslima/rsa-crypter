@@ -4,9 +4,11 @@
 #include "../util/stack.h"
 #include "math.h"
 
-stack_t* create_quotients_stack(long a, long b);
+typedef long long big_int;
 
-int is_prime(long n)
+stack_t* create_quotients_stack(big_int a, big_int b);
+
+int is_prime(big_int n)
 {
 	int i;
 	for (i = 2; i <= sqrt(n); i++) {
@@ -17,45 +19,45 @@ int is_prime(long n)
 	return 1;
 }
 
-long min(long a, long b)
+big_int min(big_int a, big_int b)
 {
 	return a < b ? a : b;
 }
 
-long max(long a, long b)
+big_int max(big_int a, big_int b)
 {
 	return a > b ? a : b;
 }
 
-long mdc(long a, long b, void (*listener)(long quotient, long remainder))
+big_int mdc(big_int a, big_int b, void (*listener)(big_int quotient, big_int remainder))
 {
 	if (b == 0) {
 		return a;
 	}
-	long mod = a % b;
+	big_int mod = a % b;
 	if (listener != NULL) {
 		listener(a / b, mod);
 	}
 	return mdc(b, mod, listener);
 }
 
-int are_coprime(long a, long b)
+int are_coprime(big_int a, big_int b)
 {
 	return mdc(a, b, NULL) == 1;
 }
 
-long coprime_mod_inverse(long a, long m)
+big_int coprime_mod_inverse(big_int a, big_int m)
 {
 	stack_t *quotients_stack = create_quotients_stack(max(a, m), min(a, m));
 	pop(quotients_stack);
 
-	long secondLast = 1;
-	long last = *((long*) pop(quotients_stack));
-	long inverse = last;
+	big_int secondLast = 1;
+	big_int last = *((big_int*) pop(quotients_stack));
+	big_int inverse = last;
 	int quotients_count = 1;
 	
 	while (!is_empty(quotients_stack)) {
-		long current = *((long*) pop(quotients_stack));
+		big_int current = *((big_int*) pop(quotients_stack));
 		inverse = (current * last) + secondLast;
 		secondLast = last;
 		last = inverse;
@@ -73,12 +75,12 @@ long coprime_mod_inverse(long a, long m)
 	return inverse;
 }
 
-stack_t* create_quotients_stack(long a, long b)
+stack_t* create_quotients_stack(big_int a, big_int b)
 {
 	stack_t *stack = create_stack();
 	
-	void quotients_listener(long quotient, long remainder) {
-		long *q = (long*) malloc(sizeof(long));
+	void quotients_listener(big_int quotient, big_int remainder) {
+		big_int *q = (big_int*) malloc(sizeof(big_int));
 		*q = quotient;
 		push(stack, q);
 	}

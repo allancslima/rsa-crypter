@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../util/stack.h"
 #include "math.h"
-
-typedef long long big_int;
+#include "../util/stack.h"
 
 stack_t* create_quotients_stack(big_int a, big_int b);
 
@@ -73,6 +71,14 @@ big_int coprime_mod_inverse(big_int a, big_int m)
 	while (inverse > m) inverse -= m;
 
 	return inverse;
+}
+
+big_int mod_exponentiation(big_int base, big_int expoent, big_int mod)
+{
+	big_int expoent_mod = expoent % (mod - 1);
+    big_int exponentiation = pow(base, expoent_mod);
+    
+    return exponentiation % mod;
 }
 
 stack_t* create_quotients_stack(big_int a, big_int b)

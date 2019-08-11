@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef STACK_HEADER_FILE
+#define STACK_HEADER_FILE
 
 typedef struct _stack stack_t;
 

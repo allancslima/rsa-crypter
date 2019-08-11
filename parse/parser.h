@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef PARSER_HEADER_FILE
+#define PARSER_HEADER_FILE
 
 int parse_char(char c);
 

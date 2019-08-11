@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef LINKED_LIST_HEADER_FILE
+#define LINKED_LIST_HEADER_FILE
 
 typedef struct _node node_t;
 typedef struct _linked_list linked_list_t;

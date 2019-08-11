@@ -16,6 +16,7 @@
 #define LABEL_DECRYPT_MESSAGE 	  "Decrypt a message\n"
 #define LABEL_EXIT 	  			  "Exit\n"
 
+#define INPUT_OPTION                      "Option: "
 #define INPUT_GENERATE_PUBLIC_KEY_PRIMES  "Type two primes P and Q: "
 #define INPUT_GENERATE_PUBLIC_KEY_EXPOENT "Type expoent E: "
 #define INPUT_MESSAGE                     "Type a message: "
@@ -28,12 +29,11 @@
 #define MSG_ERROR_ENCRYPT_MESSAGE       "A problem occured during the encryptation process.\n"
 #define MSG_SUCCESS_DECRYPT_MESSAGE     "The message has been decrypted successfully at %s\n"
 #define MSG_ERROR_DECRYPT_MESSAGE       "A problem occured during the decryptation process.\n"
+#define MSG_ERROR_DECRYPT_NO_FILE       "There is no an encrypted file!\n"
 #define MESSAGE_EXITED                  "You left from program.\n"
 #define MESSAGE_INVALID_OPTION          "Choose a valid option!\n"
 
 void start();
-
-void show_message();
 
 void show_menu();
 
@@ -72,23 +72,18 @@ void start()
 	while (1) {
 		show_menu();
 		new_line();
-		printf("Option: ");
+		printf(INPUT_OPTION);
 		scanf("%d", &option);
 		new_line();
 
 		if (option == MENU_EXIT) {
-			show_message(MESSAGE_EXITED);
+			printf(MESSAGE_EXITED);
 			break;
 		} else {
 			handle_input(option);
 			new_line();
 		}
 	}
-}
-
-void show_message(char *message)
-{
-	printf("%s", message);
 }
 
 void show_menu()
@@ -115,7 +110,7 @@ void handle_input(int option)
 			on_decrypt_message();
 			break;
 		default:
-			show_message(MESSAGE_INVALID_OPTION);
+			printf(MESSAGE_INVALID_OPTION);
 			break;
 	}
 }
@@ -149,7 +144,7 @@ void on_encrypt_message()
 {
 	clear_buffer();
 
-	char message[10000];
+	char message[1000];
 	printf(INPUT_MESSAGE);
 	fgets(message, 1000, stdin);
 
@@ -167,5 +162,33 @@ void on_encrypt_message()
 		printf(MSG_SUCCESS_ENCRYPT_MESSAGE, PATH_ENCRYPTED_MESSAGE);
 	} else {
 		printf(MSG_ERROR_ENCRYPT_MESSAGE);
+	}
+}
+
+void on_decrypt_message()
+{
+	big_int p, q, e;
+	printf(INPUT_PRIVATE_KEY);
+	scanf("%lld %lld %lld", &p, &q, &e);
+	new_line();
+	
+	private_key_t private_key;
+	private_key.p = p;
+	private_key.q = q;
+	private_key.e = e;
+	
+	FILE *encrypted_file = fopen(PATH_ENCRYPTED_MESSAGE, "r");
+	
+	if (encrypted_file == NULL) {
+		printf(MSG_ERROR_DECRYPT_NO_FILE);
+		return;
+	}
+	char encrypted_message[10000];
+	fgets(encrypted_message, 10000, encrypted_file);
+
+	if (decrypt_message(PATH_DECRYPTED_MESSAGE, encrypted_message, private_key)) {
+		printf(MSG_SUCCESS_DECRYPT_MESSAGE, PATH_DECRYPTED_MESSAGE);
+	} else {
+		printf(MSG_ERROR_DECRYPT_MESSAGE);
 	}
 }

@@ -56,12 +56,26 @@ int main(int argc, char const *argv[])
  */
 void clear_console()
 {
-	// printf("\033[H\033[J");
+	printf("\033[H\033[J");
 }
 
 void new_line()
 {
 	printf("\n");
+}
+
+void clear_buffer()
+{
+	char c;
+	while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void hold_output()
+{
+	clear_buffer();
+	printf("\nPress enter to continue...");
+	char c;
+	scanf("%c", &c);
 }
 
 void start()
@@ -81,16 +95,16 @@ void start()
 			break;
 		} else {
 			handle_input(option);
-			new_line();
+			hold_output();
 		}
 	}
+	new_line();
 }
 
 void show_menu()
 {
 	clear_console();
-	printf("    %s", LABEL_APP);
-	new_line();
+	printf("    %s\n", LABEL_APP);
 	printf("%d - %s", MENU_GENERATE_PUBLIC_KEY, LABEL_GENERATE_PUBLIC_KEY);
 	printf("%d - %s", MENU_ENCRYPT_MESSAGE, LABEL_ENCRYPT_MESSAGE);
 	printf("%d - %s", MENU_DECRYPT_MESSAGE, LABEL_DECRYPT_MESSAGE);
@@ -132,12 +146,6 @@ void on_generate_public_key()
 	} else {
 		printf(MSG_ERROR_GENERATE_PUBLIC_KEY);
 	}
-}
-
-void clear_buffer()
-{
-	char c;
-	while ((c = getchar()) != '\n' && c != EOF);
 }
 
 void on_encrypt_message()

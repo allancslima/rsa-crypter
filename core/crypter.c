@@ -7,8 +7,6 @@
 
 #define FILE_PATTERN_PUBLIC_KEY "(n, e) = (%lld, %lld)\n"
 
-typedef long long big_int;
-
 int generate_public_key(char *path, big_int p, big_int q, big_int e)
 {
 	if (!is_prime(p) || !is_prime(q)) {
@@ -39,7 +37,7 @@ big_int encrypt_char(char c, public_key_t public_key)
 char decrypt_char(big_int c, private_key_t private_key)
 {
 	big_int m = (private_key.p - 1) * (private_key.q - 1);
-	big_int d = coprime_mod_inverse(private_key.e, m);
+	big_int d = mod_inverse(private_key.e, m);
 	big_int n = private_key.p * private_key.q;
 
 	return unparse_char(mod_exponentiation(c, d, n));

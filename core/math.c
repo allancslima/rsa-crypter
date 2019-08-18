@@ -44,7 +44,7 @@ int are_coprime(big_int a, big_int b)
 	return mdc(a, b, NULL) == 1;
 }
 
-big_int coprime_mod_inverse(big_int a, big_int m)
+big_int mod_inverse(big_int a, big_int m)
 {
 	stack_t *quotients_stack = create_quotients_stack(max(a, m), min(a, m));
 	pop(quotients_stack);

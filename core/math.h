@@ -5,7 +5,7 @@
 #ifndef MATH_HEADER_FILE
 #define MATH_HEADER_FILE
 
-/*
+/**
  * Alias for long long int type.
  */
 typedef long long big_int;

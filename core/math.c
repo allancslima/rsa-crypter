@@ -75,10 +75,17 @@ big_int mod_inverse(big_int a, big_int m)
 
 big_int mod_exponentiation(big_int base, big_int expoent, big_int mod)
 {
-	big_int expoent_mod = expoent % (mod - 1);
-    big_int exponentiation = pow(base, expoent_mod);
-    
-    return exponentiation % mod;
+	int result = 1;
+	base = base % mod;
+
+	while (expoent > 0) {
+	    if (expoent & 1) {
+	    	result = (result * base) % mod;
+	    }
+	    expoent = expoent >> 1;
+	    base = (base * base) % mod;
+	}
+	return result;
 }
 
 stack_t* create_quotients_stack(big_int a, big_int b)
